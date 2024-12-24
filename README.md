@@ -106,7 +106,7 @@ We welcome contributions to enhance the Moon client-side application! Follow the
 ---
 
 ## License
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the Eclipse Public License - v 2.0. See the [LICENSE](LICENSE) file for details.
 
 ---
 
