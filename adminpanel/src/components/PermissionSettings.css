@@ -1,0 +1,48 @@
+.card {
+    margin-bottom: 20px;
+    width: 100%; 
+    max-width: 600px; 
+    margin: 0 auto; 
+  }
+  
+.card-header {
+  font-size: 1.25rem;
+}
+
+.list-group-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; 
+  }
+
+.float-right {
+  float: right;
+}
+
+.admin-form {
+  margin-top: 20px;
+}
+
+.admin-form .form-group {
+  margin-bottom: 15px;
+}
+
+.admin-form .btn-primary {
+    margin-top: 20px;
+
+}
+.formlabel{
+
+    margin-top: 15px;
+}
+.dist-list-group{
+  gap: 20px;
+}
+.btn-delete-admin {
+  font-size: 0.875rem;
+  padding: 0.25rem 0.5rem; 
+}
+
+.gapGroup{
+  gap: 20px;
+}

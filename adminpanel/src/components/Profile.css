@@ -1,0 +1,34 @@
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .profile-card {
+    margin-top: 2rem;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  
+  .profile-card .btn-link {
+    padding: 0;
+    margin-left: 1rem;
+  }
+  
+  .mt-3 {
+    margin-top: 1rem;
+  }
+  
+  .ml-2 {
+    margin-left: 0.5rem;
+  }
+
+  .showNamelink{
+    text-decoration: none;
+
+  }
+  
+  .showloginlink{
+    text-decoration: none;
+
+  }
+
