@@ -32,10 +32,6 @@ This repository contains the client-side React application for **Moon**, includi
 ### **Responsive Design**
 - Fully responsive for a smooth experience on both desktop and mobile devices.
 
-### **Theming**
-- Choose between light, dark, and classic themes.
-- Themes are saved and applied automatically on subsequent logins.
-
 ### **Security**
 - Built-in security measures to protect user data and ensure safe interactions with the server.
 
