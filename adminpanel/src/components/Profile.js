@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import { Modal, Button, Form, Card, Container, Row, Col } from 'react-bootstrap';
+import { useNavigate } from "react-router-dom";
 import "./Profile.css";
 
 const GET_ADMIN_URL = 'http://localhost:8080/adminpage/admin/';
@@ -20,18 +21,21 @@ export default function Profile() {
   const [showNameModal, setShowNameModal] = useState(false);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [permissions, setPermissions] = useState([0, 0, 0, 0]);
+  const navigate = useNavigate();
 
   useEffect(() => {
-
     axios.get(GET_CURRENT_ADMIN_URL, { withCredentials: true })
       .then(response => {
         const userId = response.data;
         if (userId) {
           axios.get(`${GET_ADMIN_URL}${userId}`, { withCredentials: true })
             .then(response => {
+              const roleId = response.data.role.id;
               setAdmin(response.data);
               setLogin(response.data.login);
               setRole(response.data.role.name);
+              setPermissions(response.data.role.permission);
             })
             .catch(error => {
               console.error("There was an error fetching the admin profile!", error);
@@ -41,7 +45,7 @@ export default function Profile() {
       .catch(error => {
         console.error("There was an error fetching the current admin ID!", error);
       });
-  }, []);
+  }, [navigate]);
 
   const handleUpdate = (e) => {
     e.preventDefault();
@@ -98,7 +102,7 @@ export default function Profile() {
         <Col md={8}>
           <Card className="profile-card shadow-sm card text-bg-light">
             <Card.Header className="text-center bg-secondary text-white">
-              <h4>Admin Profile</h4>
+              <h4>Administrator Profile</h4>
             </Card.Header>
             <Card.Body>
               <Card.Text>
@@ -119,10 +123,10 @@ export default function Profile() {
               <Card.Text>
                 <strong>Permissions:</strong>
                 <ul>
-                  <li>Edit response user</li>
-                  <li>Delete response user</li>
-                  <li>Check event logs</li>
-                  <li>Create admins</li>
+                  <li style={{ textDecoration: permissions[0] === 0 ? 'line-through' : 'none' }}>Edit User Responses</li>
+                  <li style={{ textDecoration: permissions[1] === 0 ? 'line-through' : 'none' }}>Delete User Responses</li>
+                  <li style={{ textDecoration: permissions[2] === 0 ? 'line-through' : 'none' }}>View Event Logs</li>
+                  <li style={{ textDecoration: permissions[3] === 0 ? 'line-through' : 'none' }}>Manage Roles and Administrators</li>
                 </ul>
               </Card.Text>
               <hr />
@@ -138,12 +142,12 @@ export default function Profile() {
       {/* Login Modal */}
       <Modal show={showLoginModal} onHide={() => setShowLoginModal(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Edit Login</Modal.Title>
+          <Modal.Title>Edit Username</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={handleUpdate}>
             <Form.Group controlId="formLogin">
-              <Form.Label>Login</Form.Label>
+              <Form.Label>Username</Form.Label>
               <Form.Control
                 type="text"
                 value={login}
@@ -160,12 +164,12 @@ export default function Profile() {
 
       <Modal show={showNameModal} onHide={() => setShowNameModal(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Edit Name</Modal.Title>
+          <Modal.Title>Edit Full Name</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={handleUpdate}>
             <Form.Group controlId="formName">
-              <Form.Label>Name</Form.Label>
+              <Form.Label>Full Name</Form.Label>
               <Form.Control
                 type="text"
                 value={name}

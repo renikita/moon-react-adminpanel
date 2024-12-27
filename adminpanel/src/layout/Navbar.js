@@ -1,10 +1,30 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Cookies from 'js-cookie';
+import axios from 'axios';
 
 export default function Navbar() {
   const navigate = useNavigate();
   const session = Cookies.get('session');
+  const [permissions, setPermissions] = useState([0, 0, 0, 0]);
+
+  useEffect(() => {
+    axios.get('http://localhost:8080/adminpage/currentadmin', { withCredentials: true })
+      .then(response => {
+        const adminId = response.data;
+        return axios.get(`http://localhost:8080/adminpage/admin/${adminId}`, { withCredentials: true });
+      })
+      .then(response => {
+        const roleId = response.data.role.id;
+        return axios.get(`http://localhost:8080/adminpage/role/${roleId}`, { withCredentials: true });
+      })
+      .then(response => {
+        setPermissions(response.data.permission);
+      })
+      .catch(error => {
+        console.error("There was an error fetching the permissions!", error);
+      });
+  }, []);
 
   const handleLogout = () => {
     Cookies.remove('session');
@@ -25,31 +45,33 @@ export default function Navbar() {
           </div>
           <div className="offcanvas-body">
             <ul className="navbar-nav justify-content-end flex-grow-1 pe-3">
-              <li className="nav-item dropdown">
-                <Link className="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Workspace
-                </Link>
-                <ul className="dropdown-menu">
-                  <li><Link className="dropdown-item" to="/admin/response-dashboard">Response Dashboard</Link></li>
-                  <li><Link className="dropdown-item" to="/admin/eventlog">Event Log</Link></li>
-                  <li><Link className="dropdown-item" to="/admin/permissionsettings">Permissions Settings</Link></li>
-                </ul>
-              </li>
-              <li className="nav-item dropdown">
-                <Link className="nav-link dropdown-toggle" to="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Settings
-                </Link>
-                <ul className="dropdown-menu">
-                  <li><Link className="dropdown-item" to="/admin/profile">Profile</Link></li>
-                </ul>
-              </li>
               {session ? (
-                <li className="nav-item">
-                  <button className="nav-link" onClick={handleLogout}>Log out</button>
-                </li>
+                <>
+                  <li className="nav-item dropdown">
+                    <Link className="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      Workspace
+                    </Link>
+                    <ul className="dropdown-menu">
+                      <li><Link className="dropdown-item" to="/admin/response-dashboard">Response Dashboard</Link></li>
+                      <li><Link className={`dropdown-item ${permissions[2] === 0 ? 'disabled' : ''}`} to="/admin/eventlog" title={permissions[2] === 0 ? 'Your role is not competent for this task, please contact the tech administrator if you have any issues.' : ''}>Event Logs</Link></li>
+                      <li><Link className={`dropdown-item ${permissions[3] === 0 ? 'disabled' : ''}`} to="/admin/permissionsettings" title={permissions[3] === 0 ? 'Your role is not competent for this task, please contact the tech administrator if you have any issues.' : ''}>Permission Settings</Link></li>
+                    </ul>
+                  </li>
+                  <li className="nav-item dropdown">
+                    <Link className="nav-link dropdown-toggle" to="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      Settings
+                    </Link>
+                    <ul className="dropdown-menu">
+                      <li><Link className="dropdown-item" to="/admin/profile">Profile</Link></li>
+                    </ul>
+                  </li>
+                  <li className="nav-item">
+                    <button className="nav-link" onClick={handleLogout}>Log out</button>
+                  </li>
+                </>
               ) : (
                 <li className="nav-item">
-                  <Link className="nav-link" to="/auth">Log in</Link>
+                  
                 </li>
               )}
             </ul>

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
+import { useNavigate } from "react-router-dom";
 import "./EventLog.css";
 
 const GET_ALL_EVENTLOGS_URL = 'http://localhost:8080/eventlog/all';
@@ -9,6 +10,29 @@ export default function EventLog() {
   const [currentPage, setCurrentPage] = useState(1);
   const [logsPerPage] = useState(15);
   const [search, setSearch] = useState("");
+  const [permissions, setPermissions] = useState([0, 0, 0, 0]);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    axios.get('http://localhost:8080/adminpage/currentadmin', { withCredentials: true })
+      .then(response => {
+        const adminId = response.data;
+        return axios.get(`http://localhost:8080/adminpage/admin/${adminId}`, { withCredentials: true });
+      })
+      .then(response => {
+        const roleId = response.data.role.id;
+        return axios.get(`http://localhost:8080/adminpage/role/${roleId}`, { withCredentials: true });
+      })
+      .then(response => {
+        setPermissions(response.data.permission);
+        if (response.data.permission[2] === 0) {
+          navigate('/admin/response-dashboard');
+        }
+      })
+      .catch(error => {
+        console.error("There was an error fetching the permissions!", error);
+      });
+  }, [navigate]);
 
   useEffect(() => {
     axios.get(GET_ALL_EVENTLOGS_URL, { withCredentials: true })

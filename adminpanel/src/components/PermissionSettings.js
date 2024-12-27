@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from 'axios';
 import { Container, Row, Col, Card, Form, Button, ListGroup } from 'react-bootstrap';
 import "./PermissionSettings.css";
+import { useNavigate } from "react-router-dom";
 
 const GET_ROLES_URL = 'http://localhost:8080/adminpage/roles';
 const GET_ADMINS_URL = 'http://localhost:8080/adminpage/admins';
@@ -24,6 +25,7 @@ export default function PermissionSettings() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [adminToDelete, setAdminToDelete] = useState(null);
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     axios.get(GET_ROLES_URL)
@@ -33,7 +35,26 @@ export default function PermissionSettings() {
     axios.get(GET_ADMINS_URL)
       .then(response => setAdmins(response.data))
       .catch(error => console.error("There was an error fetching the admins!", error));
-  }, []);
+
+    axios.get('http://localhost:8080/adminpage/currentadmin', { withCredentials: true })
+      .then(response => {
+        const adminId = response.data;
+        return axios.get(`http://localhost:8080/adminpage/admin/${adminId}`, { withCredentials: true });
+      })
+      .then(response => {
+        const roleId = response.data.role.id;
+        return axios.get(`http://localhost:8080/adminpage/role/${roleId}`, { withCredentials: true });
+      })
+      .then(response => {
+        setPermissions(response.data.permission);
+        if (response.data.permission[3] === 0) {
+          navigate('/admin/response-dashboard');
+        }
+      })
+      .catch(error => {
+        console.error("There was an error fetching the permissions!", error);
+      });
+  }, [navigate]);
 
   const handleRoleChange = (role) => {
     if (role) {

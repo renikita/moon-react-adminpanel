@@ -25,8 +25,7 @@ function ViewResponse() {
     response_time: '',
     status: 0
   });
-
- 
+  const [permissions, setPermissions] = useState([0, 0, 0, 0]);
 
   useEffect(() => {
     axios.get(GET_ALL_USERS_URL)
@@ -37,6 +36,24 @@ function ViewResponse() {
       .catch((error) => {
         console.error("There was an error fetching the users!", error);
         setLoading(false);
+      });
+  }, []);
+
+  useEffect(() => {
+    axios.get('http://localhost:8080/adminpage/currentadmin', { withCredentials: true })
+      .then(response => {
+        const adminId = response.data;
+        return axios.get(`http://localhost:8080/adminpage/admin/${adminId}`, { withCredentials: true });
+      })
+      .then(response => {
+        const roleId = response.data.role.id;
+        return axios.get(`http://localhost:8080/adminpage/role/${roleId}`, { withCredentials: true });
+      })
+      .then(response => {
+        setPermissions(response.data.permission);
+      })
+      .catch(error => {
+        console.error("There was an error fetching the permissions!", error);
       });
   }, []);
 
@@ -60,7 +77,6 @@ function ViewResponse() {
   const handleDelete = (id) => {
     axios.delete(`${DELETE_USER_URL}${id}`)
       .then((response) => {
-        console.log("Deleting: " + response.data);
         setUsers(users.filter((user) => user.id !== id));
       })
       .catch((error) => {
@@ -195,7 +211,7 @@ function ViewResponse() {
           style={{ top: contextMenu.y, left: contextMenu.x }}
           onMouseLeave={handleCloseContextMenu}
         >
-          <button onClick={handleEdit}>
+          <button onClick={handleEdit} disabled={permissions[0] === 0} title={permissions[0] === 0 ? 'Your role is not competent for this task, please contact the tech administrator if you have any issues.' : ''}>
             Edit
           </button>
           <div className="dropdown">
@@ -209,7 +225,9 @@ function ViewResponse() {
               <li><button className="dropdown-item" onClick={() => handleUpdateStatus(0)}>Unchecked</button></li>
             </ul>
           </div>
-          <button onClick={() => handleDelete(selectedUser.id)}>Delete</button>
+          <button onClick={() => handleDelete(selectedUser.id)} disabled={permissions[1] === 0} title={permissions[1] === 0 ? 'Your role is not competent for this task, please contact the tech administrator if you have any issues.' : ''}>
+            Delete
+          </button>
           
         </div>
       )}
