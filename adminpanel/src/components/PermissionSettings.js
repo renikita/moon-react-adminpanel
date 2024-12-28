@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 const GET_ROLES_URL = 'http://localhost:8080/adminpage/roles';
 const GET_ADMINS_URL = 'http://localhost:8080/adminpage/admins';
 const SAVE_ROLE_URL = 'http://localhost:8080/adminpage/role';
-const DELETE_ROLE_URL = 'http://localhost:8080/adminpage/role/delete';
+const DELETE_ROLE_URL = 'http://localhost:8080/adminpage/role/';
 const CREATE_ADMIN_URL = 'http://localhost:8080/adminpage/admin';
 const UPDATE_ADMIN_ROLE_URL = 'http://localhost:8080/adminpage/admin/';
 const DELETE_ADMIN_URL = 'http://localhost:8080/adminpage/admin/';
@@ -99,7 +99,7 @@ export default function PermissionSettings() {
   };
 
   const handleDeleteRole = (roleId) => {
-    axios.post(DELETE_ROLE_URL, { id: roleId })
+    axios.delete(`${DELETE_ROLE_URL}${roleId}`)
       .then(() => {
         setRoles(roles.filter(role => role.id !== roleId));
         if (selectedRole && selectedRole.id === roleId) {
