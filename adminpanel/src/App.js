@@ -1,7 +1,7 @@
 import "./App.css";
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import "../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"; 
-import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from "react-router-dom";
+import { HashRouter as Router, Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import Cookies from 'js-cookie';
 import Navbar from "./layout/Navbar";
 import axios from 'axios';
@@ -49,7 +49,7 @@ const PrivateRoute = ({ children, permissionIndex }) => {
 function App() {
   return (
     <div className="App">
-        <Router>
+        <Router basename={process.env.PUBLIC_URL || ''}>
           <Navbar />
           <Routes>
             <Route exact path="/auth" element={<Authentication />} /> 
