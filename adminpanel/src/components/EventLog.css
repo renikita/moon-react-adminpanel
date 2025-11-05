@@ -1,0 +1,22 @@
+.table-responsive {
+  overflow-x: auto;
+}
+
+.table {
+  min-width: 600px;
+}
+
+.pagination {
+  margin-top: 0;
+}
+
+pre {
+  white-space: pre-wrap; 
+  word-wrap: break-word; 
+}
+
+.badge {
+  font-size: 0.9rem;
+  padding: 0.5em;
+}
+
